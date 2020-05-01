@@ -3,12 +3,148 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BTLabelPrint.Views"
+        xmlns:local="clr-namespace:BTLabelPrint"
         xmlns:prism="http://prismlibrary.com/"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
-        prism:ViewModelLocator.AutoWireViewModel="True">
-    <Grid>
-        <Button Content="Print" Command="{Binding PrintCommand}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        Title="Печать бирок Gardenwod.ru" WindowState="Maximized"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        FontSize="14" Name="ThisWindow">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/Generic.xaml"/>
+                <ResourceDictionary>
+                    <Style TargetType="DataGridCell" x:Key="BaseCellStyle">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridCell">
+                                    <Grid Background="{TemplateBinding Background}">
+                                        <ContentPresenter VerticalAlignment="Center" Margin="5"/>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#F5F5F5"/>
+                                <Setter Property="BorderBrush" Value="#F5F5F5"/>
+                                <Setter Property="Foreground" Value="Black"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#F5F5F5"/>
+                                <Setter Property="Background" Value="#F5F5F5"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                    <local:StatusConverter x:Key="StatusConverter"/>
+                    <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <Button Command="{Binding PrintCommand}" Style="{StaticResource SimpleButton}">
+                <StackPanel Orientation="Horizontal">
+                    <!--ContentControl Content="{StaticResource Printer}" Margin="0,0,5,0" Height="20" Width="20"/-->
+                    <TextBlock Text="Печать"/>
+                </StackPanel>
+            </Button>
+            <Button Content="Обновить" Command="{Binding RefreshCommand}" Style="{StaticResource SimpleButton}"/>
+            <TextBlock Text="Принтер:" VerticalAlignment="Center" Margin="5,0"/>
+            <ComboBox DisplayMemberPath="PrinterName" ItemsSource="{Binding Printers}" MinWidth="200"
+                      VerticalContentAlignment="Center" SelectedItem="{Binding CurrentPrinter}"/>
+        </StackPanel>
+        <ProgressBar Grid.Row="1" Height="5" IsIndeterminate="True" VerticalAlignment="Top" BorderThickness="0"
+                     Foreground="LightBlue" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Orders}" Margin="0,5" AutoGenerateColumns="False"
+                  CanUserAddRows="False" CanUserDeleteRows="False" VerticalGridLinesBrush="AntiqueWhite"
+                  HorizontalGridLinesBrush="LightGray" RowHeaderWidth="0" AlternatingRowBackground="FloralWhite"
+                  AlternationCount="2" RowHeight="35" SelectionUnit="FullRow" CellStyle="{StaticResource BaseCellStyle}">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn CanUserResize="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}"
+                                      Focusable="False"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.Header>
+                        <CheckBox IsChecked="{Binding DataContext.AllSelected, ElementName=ThisWindow, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DataGridTemplateColumn.Header>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Номер заказа" Binding="{Binding Model.Number}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Дата добавления" Binding="{Binding Model.AddDate, StringFormat=dd.MM.yyyy HH:mm}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Покупатель" Binding="{Binding Model.BuyerName}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Стоимость" Binding="{Binding Model.TotalCost, StringFormat=# ### ### ###.00}" IsReadOnly="True">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell" BasedOn="{StaticResource BaseCellStyle}">
+                            <Setter Property="TextBlock.TextAlignment" Value="Right"/>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTemplateColumn Header="Статус" IsReadOnly="True" SortMemberPath="Model.StatusId">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border CornerRadius="3"
+                                    Background="{Binding Model.StatusId, Converter={StaticResource StatusConverter}}">
+                                <TextBlock Text="{Binding Model.StatusId, Converter={StaticResource StatusConverter}}"
+                                           TextAlignment="Center" Foreground="White" Padding="5,2"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Действие" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Background="Transparent" BorderThickness="0" HorizontalAlignment="Left" Cursor="Hand"
+                                    Content="{StaticResource Printer}" Height="20" Width="20" Command="{Binding DataContext.SinglePrintCommand, ElementName=ThisWindow}"
+                                    CommandParameter="{Binding Model}">
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="Margin" Value="2,0"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                    </Style>
+                </StackPanel.Resources>
+                <Button Content="&lt;"/>
+                <Button Content="&lt;&lt;"/>
+                <TextBox MinWidth="50" Margin="2,0" TextAlignment="Center" Text="{Binding CurrentPage, FallbackValue=1}"/>
+                <Button Content="&gt;"/>
+                <Button Content="&gt;&gt;"/>
+            </StackPanel>
+            <TextBlock Grid.Column="2" Text="Показывать на странице:" VerticalAlignment="Center" Margin="10,0,5,0"/>
+            <ComboBox Grid.Column="3" ItemsSource="{Binding PageCounts}" SelectedItem="{Binding CurrentPageCount}"/>
+        </Grid>
+        <Grid Grid.RowSpan="4" Visibility="{Binding IsPrinting, Converter={StaticResource BoolToVisibilityConverter}}" 
+              Background="#60F0F0F0">
+            <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="Идет печать..." Margin="50,20"/>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

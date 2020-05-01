@@ -32,6 +32,7 @@ namespace BTLabelPrint.RefitInternalGenerated
 #pragma warning disable CS8669 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. Auto-generated code requires an explicit '#nullable' directive in source.
 namespace BTLabelPrint.Services
 {
+    using global::BTLabelPrint.Models;
     using global::Refit;
     using global::System;
     using global::System.Collections.Generic;
@@ -57,11 +58,11 @@ namespace BTLabelPrint.Services
         }
 
         /// <inheritdoc />
-        Task<object> IWebApiService.GetOrders()
+        Task<Models.ApiResponse<OrderResponse>> IWebApiService.GetOrders(string token, string param)
         {
-            var arguments = new object[] {  };
-            var func = requestBuilder.BuildRestResultFuncForMethod("GetOrders", new Type[] {  });
-            return (Task<object>)func(Client, arguments);
+            var arguments = new object[] { token, param };
+            var func = requestBuilder.BuildRestResultFuncForMethod("GetOrders", new Type[] { typeof(string), typeof(string) });
+            return (Task<Models.ApiResponse<OrderResponse>>)func(Client, arguments);
         }
     }
 }

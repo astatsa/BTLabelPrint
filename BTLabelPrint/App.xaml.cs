@@ -32,6 +32,20 @@ namespace BTLabelPrint
                 .AddJsonFile("appsettings.Local.json", true)
                 .Build();
             var httpSettings = configuration.GetSection("WebApiSettings");
+            var printSettings = configuration.GetSection("PrintSettings");
+
+            AppSettings.Token = httpSettings.GetValue<string>("Token");
+            if(String.IsNullOrWhiteSpace(AppSettings.Token))
+            {
+                MessageBox.Show("Укажите Token в файле настроек!");
+                Shutdown();
+            }
+            AppSettings.LabelPath = printSettings.GetValue<string>("LabelPath");
+            if (String.IsNullOrWhiteSpace(AppSettings.LabelPath))
+            {
+                MessageBox.Show("Укажите путь к шаблону бирки в файле настроек!");
+                Shutdown();
+            }
 
             containerRegistry.RegisterInstance<IWebApiService>(Refit.RestService.For<IWebApiService>(httpSettings.GetValue<string>("Url")));
 

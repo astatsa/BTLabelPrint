@@ -1,4 +1,5 @@
-﻿using Refit;
+﻿using BTLabelPrint.Models;
+using Refit;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,7 +9,7 @@ namespace BTLabelPrint.Services
 {
     interface IWebApiService
     {
-        [Get("/orders")]
-        Task<object> GetOrders();
+        [Get("/api?token={token}&method=getOrder&param={param}")]
+        Task<Models.ApiResponse<OrderResponse>> GetOrders(string token, string param);
     }
 }

@@ -145,7 +145,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\ApiParam.cs" />
+    <Compile Include="Models\ApiResponse.cs" />
+    <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\OrderContent.cs" />
+    <Compile Include="Models\OrderRequestParam.cs" />
+    <Compile Include="Models\OrderResponse.cs" />
+    <Compile Include="Models\OrderRow.cs" />
     <Compile Include="Services\IWebApiService.cs" />
+    <Compile Include="StatusConverter.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -154,6 +162,7 @@
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AppSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -186,6 +195,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Resources\Styles\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

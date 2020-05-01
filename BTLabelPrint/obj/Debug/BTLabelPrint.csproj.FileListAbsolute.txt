@@ -170,3 +170,5 @@ D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\obj\Debug\BTLabelPrint.csproj.Cor
 D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\obj\Debug\BTLabelPrint.csproj.CopyComplete
 D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\obj\Debug\BTLabelPrint.exe
 D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\obj\Debug\BTLabelPrint.pdb
+D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\obj\Debug\Resources\Styles\Generic.baml
+D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\obj\Debug\GeneratedInternalTypeHelper.g.cs
