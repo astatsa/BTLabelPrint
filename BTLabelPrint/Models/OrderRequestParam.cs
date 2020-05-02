@@ -1,13 +1,15 @@
 ﻿using Newtonsoft.Json;
+using Refit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BTLabelPrint.Models
 {
-    class OrderRequestParam
+    class OrderRequestParam : IFormattable
     {
         [JsonProperty("page")]
         public int Page { get; set; }
@@ -23,6 +25,11 @@ namespace BTLabelPrint.Models
         public override string ToString()
         {
             return JsonConvert.SerializeObject(this);
+        }
+
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return ToString();
         }
     }
 }

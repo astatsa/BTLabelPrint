@@ -12,6 +12,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using BTLabelPrint.Helpers;
 
 namespace BTLabelPrint
 {
@@ -47,9 +48,26 @@ namespace BTLabelPrint
                 Shutdown();
             }
 
-            containerRegistry.RegisterInstance<IWebApiService>(Refit.RestService.For<IWebApiService>(httpSettings.GetValue<string>("Url")));
+            AppSettings.Delimiter = printSettings.GetValue<string>("Delimiter");
+            if(String.IsNullOrEmpty(AppSettings.Delimiter))
+            {
+                AppSettings.Delimiter = "#";
+            }
+
+            containerRegistry.RegisterInstance<IWebApiService>(
+                Refit.RestService.For<IWebApiService>(
+                    new System.Net.Http.HttpClient(new WebApiHttpClientHandler())
+                    {
+                        BaseAddress = new Uri(httpSettings.GetValue<string>("Url"))
+                    }));
 
             ViewModelLocationProvider.Register<MainWindow, MainWindowViewModel>();
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            BTLabelPrint.Properties.Settings.Default.Save();
+            base.OnExit(e);
         }
     }
 }

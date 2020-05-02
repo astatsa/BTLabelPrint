@@ -58,10 +58,10 @@ namespace BTLabelPrint.Services
         }
 
         /// <inheritdoc />
-        Task<Models.ApiResponse<OrderResponse>> IWebApiService.GetOrders(string token, string param)
+        Task<Models.ApiResponse<OrderResponse>> IWebApiService.GetOrders(string token, OrderRequestParam param)
         {
             var arguments = new object[] { token, param };
-            var func = requestBuilder.BuildRestResultFuncForMethod("GetOrders", new Type[] { typeof(string), typeof(string) });
+            var func = requestBuilder.BuildRestResultFuncForMethod("GetOrders", new Type[] { typeof(string), typeof(OrderRequestParam) });
             return (Task<Models.ApiResponse<OrderResponse>>)func(Client, arguments);
         }
     }

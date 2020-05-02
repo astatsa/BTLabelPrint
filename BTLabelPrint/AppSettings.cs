@@ -10,5 +10,6 @@ namespace BTLabelPrint
     {
         public static string Token { get; set; }
         public static string LabelPath { get; set; }
+        public static string Delimiter { get; set; }
     }
 }

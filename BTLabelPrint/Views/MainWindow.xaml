@@ -4,7 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BTLabelPrint"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:prism="http://prismlibrary.com/"
+        xmlns:prop="clr-namespace:BTLabelPrint.Properties"
         mc:Ignorable="d"
         Title="Печать бирок Gardenwod.ru" WindowState="Maximized"
         prism:ViewModelLocator.AutoWireViewModel="True"
@@ -62,7 +64,7 @@
         </StackPanel>
         <ProgressBar Grid.Row="1" Height="5" IsIndeterminate="True" VerticalAlignment="Top" BorderThickness="0"
                      Foreground="LightBlue" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"/>
-        <DataGrid Grid.Row="1" ItemsSource="{Binding Orders}" Margin="0,5" AutoGenerateColumns="False"
+        <DataGrid Grid.Row="1" Name="dataGrid" ItemsSource="{Binding Orders}" Margin="0,5" AutoGenerateColumns="False"
                   CanUserAddRows="False" CanUserDeleteRows="False" VerticalGridLinesBrush="AntiqueWhite"
                   HorizontalGridLinesBrush="LightGray" RowHeaderWidth="0" AlternatingRowBackground="FloralWhite"
                   AlternationCount="2" RowHeight="35" SelectionUnit="FullRow" CellStyle="{StaticResource BaseCellStyle}">
@@ -104,8 +106,7 @@
                         <DataTemplate>
                             <Button Background="Transparent" BorderThickness="0" HorizontalAlignment="Left" Cursor="Hand"
                                     Content="{StaticResource Printer}" Height="20" Width="20" Command="{Binding DataContext.SinglePrintCommand, ElementName=ThisWindow}"
-                                    CommandParameter="{Binding Model}">
-                            </Button>
+                                    CommandParameter="{Binding Model}" Margin="5,0"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -113,6 +114,29 @@
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="ToolTip">
+                        <Setter.Value>
+                            <ItemsControl ItemsSource="{Binding Model.OrderContent}" MaxWidth="400">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Vertical"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Name}"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Count}" TextAlignment="Right" Margin="10,0,0,0"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Setter.Value>
+                    </Setter>
                 </Style>
             </DataGrid.RowStyle>
         </DataGrid>
@@ -126,23 +150,43 @@
             <StackPanel Grid.Column="0" Orientation="Horizontal">
                 <StackPanel.Resources>
                     <Style TargetType="Button">
-                        <Setter Property="Margin" Value="2,0"/>
+                        <Setter Property="Margin" Value="4,0"/>
                         <Setter Property="Background" Value="Transparent"/>
                         <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Cursor" Value="Hand"/>
                     </Style>
                 </StackPanel.Resources>
-                <Button Content="&lt;"/>
-                <Button Content="&lt;&lt;"/>
-                <TextBox MinWidth="50" Margin="2,0" TextAlignment="Center" Text="{Binding CurrentPage, FallbackValue=1}"/>
-                <Button Content="&gt;"/>
-                <Button Content="&gt;&gt;"/>
+                <Button Content="&lt;&lt;" Command="{Binding SetLastOrFirstPageCommand}">
+                    <Button.CommandParameter>
+                        <sys:Boolean>False</sys:Boolean>
+                    </Button.CommandParameter>
+                </Button>
+                <Button Content="&lt;" Command="{Binding ChangePageCommand}">
+                    <Button.CommandParameter>
+                        <sys:Int32>-1</sys:Int32>
+                    </Button.CommandParameter>
+                </Button>
+                <TextBox MinWidth="30" Margin="2,0" TextAlignment="Center" Text="{Binding CurrentPage, FallbackValue=1}"
+                         VerticalContentAlignment="Center" PreviewKeyUp="TextBox_PreviewKeyUp"/>
+                <TextBlock Text="{Binding LastPage, StringFormat=из {0}, FallbackValue=из 100}" Margin="2,0" VerticalAlignment="Center"/>
+                <Button Content="&gt;" Command="{Binding ChangePageCommand}">
+                    <Button.CommandParameter>
+                        <sys:Int32>1</sys:Int32>
+                    </Button.CommandParameter>
+                </Button>
+                <Button Content="&gt;&gt;" Command="{Binding SetLastOrFirstPageCommand}">
+                    <Button.CommandParameter>
+                        <sys:Boolean>True</sys:Boolean>
+                    </Button.CommandParameter>
+                </Button>
             </StackPanel>
             <TextBlock Grid.Column="2" Text="Показывать на странице:" VerticalAlignment="Center" Margin="10,0,5,0"/>
             <ComboBox Grid.Column="3" ItemsSource="{Binding PageCounts}" SelectedItem="{Binding CurrentPageCount}"/>
         </Grid>
         <Grid Grid.RowSpan="4" Visibility="{Binding IsPrinting, Converter={StaticResource BoolToVisibilityConverter}}" 
               Background="#60F0F0F0">
-            <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2" VerticalAlignment="Center" HorizontalAlignment="Center"
+                    Background="#FAF5F5F5">
                 <TextBlock Text="Идет печать..." Margin="50,20"/>
             </Border>
         </Grid>

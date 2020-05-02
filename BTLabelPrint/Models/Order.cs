@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BTLabelPrint.Helpers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +15,15 @@ namespace BTLabelPrint.Models
         public string BuyerName { get; set; }
         public string Comment { get; set; }
         [JsonProperty("add_date")]
+        [JsonConverter(typeof(DateTimeJsonConverter))]
         public DateTime? AddDate { get; set; }
         public string Address { get; set; }
         [JsonProperty("close_date")]
+        [JsonConverter(typeof(DateTimeJsonConverter))]
         public DateTime? CloseDate { get; set; }
+        [JsonProperty("updata_date")]
+        [JsonConverter(typeof(DateTimeJsonConverter))]
+        public DateTime? UpdateDate { get; set; }
         public string Number { get; set; }
         public string Phone { get; set; }
         [JsonProperty("status_id")]

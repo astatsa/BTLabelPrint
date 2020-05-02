@@ -130,8 +130,6 @@ D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\bin\Debug\System.ValueTuple.dll
 D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\bin\Debug\System.Windows.Interactivity.dll
 D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\bin\Debug\Unity.Abstractions.dll
 D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\bin\Debug\Unity.Container.dll
-D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\bin\Debug\Seagull.Services.PrintScheduler.dll
-D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\bin\Debug\Seagull.Services.PrintScheduler.Contracts.dll
 D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
 D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\bin\Debug\Microsoft.Extensions.Configuration.xml
 D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\bin\Debug\Microsoft.Extensions.Configuration.Abstractions.xml

@@ -9,7 +9,8 @@ namespace BTLabelPrint.Services
 {
     interface IWebApiService
     {
-        [Get("/api?token={token}&method=getOrder&param={param}")]
-        Task<Models.ApiResponse<OrderResponse>> GetOrders(string token, string param);
+        [Get("/api?token={token}&method=getOrder")]
+        [QueryUriFormat(UriFormat.Unescaped)]
+        Task<Models.ApiResponse<OrderResponse>> GetOrders(string token, OrderRequestParam param);
     }
 }
