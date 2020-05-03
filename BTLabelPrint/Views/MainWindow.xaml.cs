@@ -53,8 +53,23 @@ namespace BTLabelPrint.Views
         {
             if(e.Key == Key.Enter)
             {
-                ((Control)sender).GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
+                var ctl = ((Control)sender);
+
+                ctl.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
+                if(ctl.Tag is ICommand command)
+                {
+                    command.Execute(null);
+                }
             }
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            if (DataContext is IDisposable disp)
+            {
+                disp.Dispose();
+            }
+            base.OnClosed(e);
         }
     }
 }

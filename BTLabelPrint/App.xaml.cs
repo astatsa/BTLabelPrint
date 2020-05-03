@@ -61,6 +61,11 @@ namespace BTLabelPrint
                         BaseAddress = new Uri(httpSettings.GetValue<string>("Url"))
                     }));
 
+            containerRegistry.RegisterInstance<SearchSortService>(
+                new SearchSortService(
+                    Container.Resolve<IWebApiService>(),
+                    AppSettings.Token));
+
             ViewModelLocationProvider.Register<MainWindow, MainWindowViewModel>();
         }
 

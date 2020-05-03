@@ -170,3 +170,6 @@ D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\obj\Debug\BTLabelPrint.exe
 D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\obj\Debug\BTLabelPrint.pdb
 D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\obj\Debug\Resources\Styles\Generic.baml
 D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\obj\Debug\GeneratedInternalTypeHelper.g.cs
+D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\bin\Debug\appsettings.Local1.json
+D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\bin\Debug\Resources\Labels\gardenwod.btw
+D:\Igor\source\repos\BTLabelPrint\BTLabelPrint\bin\Debug\Resources\Labels\gardenwod2016.btw

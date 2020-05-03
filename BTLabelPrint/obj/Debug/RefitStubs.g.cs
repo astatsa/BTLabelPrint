@@ -37,6 +37,7 @@ namespace BTLabelPrint.Services
     using global::System;
     using global::System.Collections.Generic;
     using global::System.Text;
+    using global::System.Threading;
     using global::System.Threading.Tasks;
 
     /// <inheritdoc />
@@ -58,10 +59,10 @@ namespace BTLabelPrint.Services
         }
 
         /// <inheritdoc />
-        Task<Models.ApiResponse<OrderResponse>> IWebApiService.GetOrders(string token, OrderRequestParam param)
+        Task<Models.ApiResponse<OrderResponse>> IWebApiService.GetOrders(string token, OrderRequestParam param, CancellationToken cancellationToken)
         {
-            var arguments = new object[] { token, param };
-            var func = requestBuilder.BuildRestResultFuncForMethod("GetOrders", new Type[] { typeof(string), typeof(OrderRequestParam) });
+            var arguments = new object[] { token, param, cancellationToken };
+            var func = requestBuilder.BuildRestResultFuncForMethod("GetOrders", new Type[] { typeof(string), typeof(OrderRequestParam), typeof(CancellationToken) });
             return (Task<Models.ApiResponse<OrderResponse>>)func(Client, arguments);
         }
     }

@@ -40,6 +40,7 @@
                     </Style>
                     <local:StatusConverter x:Key="StatusConverter"/>
                     <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+                    <local:InverseBooleanConverter x:Key="InverseBoolConverter"/>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -58,12 +59,45 @@
                 </StackPanel>
             </Button>
             <Button Content="Обновить" Command="{Binding RefreshCommand}" Style="{StaticResource SimpleButton}"/>
+            <ComboBox ItemsSource="{Binding SearchFields}" MinWidth="100" DisplayMemberPath="Alias"
+                      IsEnabled="{Binding IsSearching, Converter={StaticResource InverseBoolConverter}}"
+                      SelectedItem="{Binding CurrentSearchField}" VerticalContentAlignment="Center"/>
+            <TextBox MinWidth="100" Margin="1,0,5,0" Text="{Binding SearchString}" VerticalContentAlignment="Center"
+                     Tag="{Binding SearchCommand}" PreviewKeyUp="TextBox_PreviewKeyUp" 
+                     IsEnabled="{Binding IsSearching, Converter={StaticResource InverseBoolConverter}}"/>
+            <Button Command="{Binding SearchCommand}">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource SimpleButton}">
+                        <Setter Property="Content" Value="Поиск"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsSearching}" Value="True">
+                                <Setter Property="Content" Value="Отмена"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
             <TextBlock Text="Принтер:" VerticalAlignment="Center" Margin="5,0"/>
-            <ComboBox DisplayMemberPath="PrinterName" ItemsSource="{Binding Printers}" MinWidth="200"
+            <ComboBox DisplayMemberPath="PrinterName" ItemsSource="{Binding Printers}" MinWidth="100"
                       VerticalContentAlignment="Center" SelectedItem="{Binding CurrentPrinter}"/>
         </StackPanel>
         <ProgressBar Grid.Row="1" Height="5" IsIndeterminate="True" VerticalAlignment="Top" BorderThickness="0"
-                     Foreground="LightBlue" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                     Foreground="LightBlue">
+            <ProgressBar.Style>
+                <Style TargetType="ProgressBar">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsLoading}" Value="False"/>
+                                <Condition Binding="{Binding IsSearching}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ProgressBar.Style>
+        </ProgressBar>
         <DataGrid Grid.Row="1" Name="dataGrid" ItemsSource="{Binding Orders}" Margin="0,5" AutoGenerateColumns="False"
                   CanUserAddRows="False" CanUserDeleteRows="False" VerticalGridLinesBrush="AntiqueWhite"
                   HorizontalGridLinesBrush="LightGray" RowHeaderWidth="0" AlternatingRowBackground="FloralWhite"
@@ -83,6 +117,7 @@
                 <DataGridTextColumn Header="Номер заказа" Binding="{Binding Model.Number}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Дата добавления" Binding="{Binding Model.AddDate, StringFormat=dd.MM.yyyy HH:mm}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Покупатель" Binding="{Binding Model.BuyerName}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Номер телефона" Binding="{Binding Model.Phone}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Стоимость" Binding="{Binding Model.TotalCost, StringFormat=# ### ### ###.00}" IsReadOnly="True">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell" BasedOn="{StaticResource BaseCellStyle}">
@@ -147,7 +182,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0" Orientation="Horizontal">
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Visibility="Collapsed">
                 <StackPanel.Resources>
                     <Style TargetType="Button">
                         <Setter Property="Margin" Value="4,0"/>

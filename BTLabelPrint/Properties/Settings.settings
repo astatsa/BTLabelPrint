@@ -8,5 +8,8 @@
     <Setting Name="CountPerPage" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">100</Value>
     </Setting>
+    <Setting Name="SearchFieldName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">BuyerName</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

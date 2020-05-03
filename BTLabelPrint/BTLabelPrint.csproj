@@ -165,6 +165,7 @@
     </ApplicationDefinition>
     <Compile Include="Helpers\DateTimeJsonConverter.cs" />
     <Compile Include="Helpers\WebApiHttpClientHandler.cs" />
+    <Compile Include="InverseBooleanConverter.cs" />
     <Compile Include="Models\ApiParam.cs" />
     <Compile Include="Models\ApiResponse.cs" />
     <Compile Include="Models\Order.cs" />
@@ -173,6 +174,7 @@
     <Compile Include="Models\OrderResponse.cs" />
     <Compile Include="Models\OrderRow.cs" />
     <Compile Include="Services\IWebApiService.cs" />
+    <Compile Include="Services\SearchSortService.cs" />
     <Compile Include="StatusConverter.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="App.xaml.cs">
@@ -202,6 +204,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="appsettings.Local1.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -210,7 +215,12 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Resources\gardenwod.btw" />
+    <None Include="Resources\Labels\gardenwod.btw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Labels\gardenwod2016.btw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -224,12 +234,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="icons8-принтер-для-печати-этикеток-32.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="icons8-печать-адресной-этикетки-40.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="icon-print.ico" />

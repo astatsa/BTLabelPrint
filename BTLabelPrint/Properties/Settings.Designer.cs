@@ -46,5 +46,17 @@ namespace BTLabelPrint.Properties {
                 this["CountPerPage"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("BuyerName")]
+        public string SearchFieldName {
+            get {
+                return ((string)(this["SearchFieldName"]));
+            }
+            set {
+                this["SearchFieldName"] = value;
+            }
+        }
     }
 }
