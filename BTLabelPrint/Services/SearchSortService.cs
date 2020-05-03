@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -31,7 +33,7 @@ namespace BTLabelPrint.Services
                 },
                 cancellationToken);
 
-        public async Task<IEnumerable<Order>> GetLastSortedOrders(int count, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Order>> GetLastSortedDescOrders(int count, CancellationToken cancellationToken)
         {
             List<Order> orders = new List<Order>();
 
@@ -42,19 +44,50 @@ namespace BTLabelPrint.Services
             return orders.OrderByDescending(x => x.Id).Take(count);
         }
 
+        /// <summary>
+        /// Return last count orders, if count < 0 return all orders
+        /// </summary>
+        /// <param name="count"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<Order>> GetLastSortedOrdersAsync(int count, CancellationToken cancellationToken)
+        {
+            int pageSize = Math.Min(50, count);
+
+            int ordersCount = await GetOrdersCountAsync(cancellationToken);
+            int lastPage = (int)Math.Ceiling((double)ordersCount / pageSize);
+            if (lastPage <= 0)
+            {
+                return Enumerable.Empty<Order>();
+            }
+
+            List<Order> result = new List<Order>();
+            while (!cancellationToken.IsCancellationRequested && count > 0)
+            {
+                var response = await GetOrdersAsync(lastPage, pageSize, cancellationToken);
+                var orders = response.Orders;
+                if(response.Orders.Count > count)
+                {
+                    orders.RemoveRange(count, orders.Count - count);
+                }
+                orders.Reverse();
+                result.AddRange(orders);
+
+                count -= orders.Count;
+                lastPage--;
+            }
+
+            return result;
+        }
+
         private async Task ProcessAllOrders(Action<IEnumerable<Order>> processAction, CancellationToken cancellationToken)
         {
             const int pageSize = 50;
 
             try
             {
-                var response = await GetOrdersAsync(1, 1, cancellationToken);
-
-                if (response == null || response.Count <= 0)
-                {
-                    return;
-                }
-                int lastPage = (int)Math.Ceiling((double)response.CountOrder / pageSize);
+                int ordersCount = await GetOrdersCountAsync(cancellationToken);
+                int lastPage = (int)Math.Ceiling((double)ordersCount / pageSize);
                 if (lastPage <= 0)
                 {
                     return;
@@ -64,10 +97,6 @@ namespace BTLabelPrint.Services
                 while (lastPage > 0 && !cancellationToken.IsCancellationRequested)
                 {
                     tasks.Add(GetOrdersAsync(lastPage, pageSize, cancellationToken));
-
-                    //response = await GetOrdersAsync(lastPage, pageSize, cancellationToken);
-                    //processAction(response.Orders);
-
                     lastPage--;
                 }
 
@@ -80,6 +109,16 @@ namespace BTLabelPrint.Services
             {
                 return;
             }
+        }
+
+        private async Task<int> GetOrdersCountAsync(CancellationToken cancellationToken)
+        {
+            var response = await GetOrdersAsync(1, 1, cancellationToken);
+            if (response == null || response.CountOrder <= 0)
+            {
+                return 0;
+            }
+            return response.CountOrder;
         }
 
         private async Task<OrderResponse> GetOrdersAsync(int page, int count, CancellationToken cancellationToken)

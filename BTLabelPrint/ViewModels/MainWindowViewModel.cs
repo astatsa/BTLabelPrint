@@ -245,7 +245,7 @@ namespace BTLabelPrint.ViewModels
             IsLoading = true;
             try
             {
-                Orders = (await searchService.GetLastSortedOrders(CurrentPageCount, CancellationToken.None))
+                Orders = (await searchService.GetLastSortedOrdersAsync(CurrentPageCount, CancellationToken.None))
                     .Select(x => new SelectableWrapper<Order>(x))
                     .ToList();
                 //var response = await GetOrders(CurrentPage, CurrentPageCount);
@@ -332,7 +332,15 @@ namespace BTLabelPrint.ViewModels
                     {
                         //BarTender 2016
                         var tmpFilePath = Path.GetTempFileName();
-                        File.WriteAllLines(tmpFilePath, rows.Select(x => $"{x.Name}Demo{AppSettings.Delimiter}{x.Count}"), Encoding.UTF8);
+                        File.WriteAllLines(tmpFilePath, rows.Select(
+                            x =>
+                            {
+#if DEMO
+                                return $"{x.Name}Demo{AppSettings.Delimiter}{x.Count}";
+#else
+                                return $"{x.Name}{AppSettings.Delimiter}{x.Count}";
+#endif
+                            }), Encoding.UTF8);
                         if(!(doc.DatabaseConnections["DB"] is TextFile dbConn))
                         {
                             throw new Exception("В шаблоне не найдено подключение к базе данных!");
